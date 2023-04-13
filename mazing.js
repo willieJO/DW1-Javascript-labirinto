@@ -27,7 +27,6 @@ var Mazing = function(id) {
       var el =  this.mazeContainer.children[i].children[j];
       this.maze[new Position(i, j)] = el;
       if(el.classList.contains("entrance")) {
-        /* place hero on entrance square */
         this.heroPos = new Position(i, j);
         this.maze[this.heroPos].classList.add("hero");
       }

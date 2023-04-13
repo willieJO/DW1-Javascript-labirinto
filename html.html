@@ -22,9 +22,25 @@
 <div id="maze_container" class="d-none"><!-- --></div>
 <script>
   let segundos = 0;
+  var intervalo;
   $('#start').on('click',function(){
     $('#maze_container').removeClass('d-none');
     $('#start').addClass('d-none');
+    intervalo = setInterval(() => {
+      // Incrementa os segundos
+      segundos++;
+    
+      // Converte os segundos em minutos e segundos
+      const minutos = Math.floor(segundos / 60);
+      const segundosRestantes = segundos % 60;
+    
+      // Formata a saída
+      const minutosFormatados = minutos < 10 ? `0${minutos}` : minutos;
+      const segundosFormatados = segundosRestantes < 10 ? `0${segundosRestantes}` : segundosRestantes;
+      const tempoFormatado = `${minutosFormatados}:${segundosFormatados}`;
+    
+      $('#maze_score').html(tempoFormatado);
+    }, 1000);
   })
 
   var Maze, MazeGame;
@@ -37,22 +53,6 @@
   };  
 
   makeMaze("maze_container", 12, 12);
-
-  var intervalo = setInterval(() => {
-    // Incrementa os segundos
-    segundos++;
-  
-    // Converte os segundos em minutos e segundos
-    const minutos = Math.floor(segundos / 60);
-    const segundosRestantes = segundos % 60;
-  
-    // Formata a saída
-    const minutosFormatados = minutos < 10 ? `0${minutos}` : minutos;
-    const segundosFormatados = segundosRestantes < 10 ? `0${segundosRestantes}` : segundosRestantes;
-    const tempoFormatado = `${minutosFormatados}:${segundosFormatados}`;
-  
-    $('#maze_score').html(tempoFormatado);
-  }, 1000);
 
 </script>
 </body>
