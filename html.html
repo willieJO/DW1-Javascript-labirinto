@@ -25,7 +25,6 @@
   $('#start').on('click',function(){
     $('#maze_container').removeClass('d-none');
     $('#start').addClass('d-none');
-    
   })
 
   var Maze, MazeGame;
@@ -34,10 +33,8 @@
     Maze = new FancyMazeBuilder(width, height);
     Maze.display(id);
     MazeGame = new Mazing("maze");
-    if(speech) {
-      MazeGame.enableSpeech();
-    }
-  };
+   
+  };  
 
   makeMaze("maze_container", 12, 12);
 

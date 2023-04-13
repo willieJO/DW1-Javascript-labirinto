@@ -1,8 +1,5 @@
 class FancyMazeBuilder extends MazeBuilder {
 
-  // Original JavaScript code by Chirp Internet: www.chirpinternet.eu
-  // Please acknowledge use of this code by including this header.
-
   constructor(width, height) {
 
     super(width, height);
