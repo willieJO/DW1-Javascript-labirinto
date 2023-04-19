@@ -4,21 +4,21 @@ class MazeBuilder {
 
     this.width = width;
     this.height = height;
-
+  
     this.cols = 2 * this.width + 1;
     this.rows = 2 * this.height + 1;
-
+  
     this.maze = this.initArray([]);
-
-    this.maze.forEach((row, r) => {
-      row.forEach((cell, c) => {
+  
+    $.each(this.maze, (r, row) => {
+      $.each(row, (c, cell) => {
         switch(r)
         {
           case 0:
           case this.rows - 1:
             this.maze[r][c] = ["wall"];
             break;
-
+  
           default:
             if((r % 2) == 1) {
               if((c == 0) || (c == this.cols - 1)) {
@@ -27,57 +27,59 @@ class MazeBuilder {
             } else if(c % 2 == 0) {
               this.maze[r][c] = ["wall"];
             }
-
+  
         }
       });
-
+  
       if(r == 0) {
         let doorPos = this.posToSpace(this.rand(1, this.width));
         this.maze[r][doorPos] = ["door", "exit"];
       }
-
+  
       if(r == this.rows - 1) {
         let doorPos = this.posToSpace(this.rand(1, this.width));
         this.maze[r][doorPos] = ["door", "entrance"];
       }
-
+  
     });
-
-
-
+  
     this.partition(1, this.height - 1, 1, this.width - 1);
-
+  
   }
 
   initArray(value) {
-    return new Array(this.rows).fill().map(() => new Array(this.cols).fill(value));
+    return Array.from({ length: this.rows }, () => Array(this.cols).fill(value));
   }
 
   rand(min, max) {
     return min + Math.floor(Math.random() * (1 + max - min));
   }
 
+  rand(min, max) {
+    return min + Math.floor(Math.random() * (1 + max - min));
+  }
+  
   posToSpace(x) {
     return 2 * (x-1) + 1;
   }
-
+  
   posToWall(x) {
     return 2 * x;
   }
-
+  
   inBounds(r, c) {
-    if((typeof this.maze[r] == "undefined") || (typeof this.maze[r][c] == "undefined")) {
+    if((typeof this.maze[r] === "undefined") || (typeof this.maze[r][c] === "undefined")) {
       return false; 
     }
     return true;
   }
-
+  
   shuffle(array) {
-    for(let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
+    return $.map(array, (value, index) => {
+      const j = Math.floor(Math.random() * (index + 1));
+      [array[index], array[j]] = [array[j], array[index]];
+      return array[index];
+    });
   }
 
   partition(r1, r2, c1, c2) {
@@ -147,16 +149,17 @@ class MazeBuilder {
   }
 
   isGap(...cells) {
-    return cells.every((array) => {
-      let row, col;
-      [row, col] = array;
+    let allGaps = true;
+    $.each(cells, (index, cell) => {
+      let [row, col] = cell;
       if(this.maze[row][col].length > 0) {
         if(!this.maze[row][col].includes("door")) {
-          return false;
+          allGaps = false;
+          return false; 
         }
       }
-      return true;
     });
+    return allGaps;
   }
 
   countSteps(array, r, c, val, stop) {
@@ -186,41 +189,35 @@ class MazeBuilder {
 
   }
 
-  
-
-  
-
   display(id) {
-
-    this.parentDiv = document.getElementById(id);
-
-    if(!this.parentDiv) {
+    this.parentDiv = $("#" + id);
+  
+    if(!this.parentDiv.length) {
       alert("Cannot initialise maze - no element found with id \"" + id + "\"");
       return false;
     }
-
-    while(this.parentDiv.firstChild) {
-      this.parentDiv.removeChild(this.parentDiv.firstChild);
-    }
-
-    const container = document.createElement("div");
-    container.id = "maze";
-    container.dataset.steps = this.totalSteps;
-
-    this.maze.forEach((row) => {
-      let rowDiv = document.createElement("div");
-      row.forEach((cell) => {
-        let cellDiv = document.createElement("div");
-        if(cell) {
-          cellDiv.className = cell.join(" ");
-        }
-        rowDiv.appendChild(cellDiv);
-      });
-      container.appendChild(rowDiv);
+  
+    this.parentDiv.empty();
+  
+    const container = $("<div/>", {
+      id: "maze",
+      "data-steps": this.totalSteps
     });
-
-    this.parentDiv.appendChild(container);
-
+  
+    $.each(this.maze, (i, row) => {
+      let rowDiv = $("<div/>");
+      $.each(row, (j, cell) => {
+        let cellDiv = $("<div/>");
+        if(cell) {
+          cellDiv.addClass(cell.join(" "));
+        }
+        rowDiv.append(cellDiv);
+      });
+      container.append(rowDiv);
+    });
+  
+    this.parentDiv.append(container);
+  
     return true;
   }
 
